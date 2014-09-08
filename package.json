@@ -1,0 +1,19 @@
+{
+	"name": "eureka-sidecar",
+	"version": "0.0.1",
+	"description": "Registers with a Eureka server, and optionally updates status based on a health check endpoint",
+	"license": "Apache-2.0",
+	"bugs": {
+		"email": "matthaeus.harris@gmail.com"
+	},
+	"author": {
+		"name": "Matt Harris",
+		"email": "matthaeus.harris@gmail.com"
+	},
+	"dependencies": {
+		"node-rest-client": "~1.0.0"
+	},
+	"scripts": {
+    "start": "node ./bin/cli.js"
+  }
+}
