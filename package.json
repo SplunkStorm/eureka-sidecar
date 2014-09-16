@@ -1,24 +1,38 @@
 {
   "name": "eureka-sidecar",
   "version": "0.0.2",
-  "description": "Registers with a Eureka server, and optionally updates status based on a health check endpoint",
-  "license": "Apache-2.0",
-  "bugs": {
-    "email": "matthaeus.harris@gmail.com"
+  "description": "Library and optional CLI for registering with a Eureka service discovery server",
+  "main": "lib/eureka-sidecar.js",
+  "bin": {
+    "eureka-sidecar": "cli.js"
   },
-  "author": {
-    "name": "Matt Harris",
-    "email": "matthaeus.harris@gmail.com"
+  "directories": {
+    "test": "test"
   },
   "dependencies": {
-    "node-rest-client": "~1.0.0"
-  },
-  "scripts": {
-    "start": "node ./bin/cli.js"
+    "node-rest-client": "^1.0.0"
   },
   "devDependencies": {
     "mocha": "^1.21.4",
-    "sinon": "^1.10.3",
-    "should": "^4.0.4"
-  }
+    "should": "^4.0.4",
+    "sinon": "^1.10.3"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SplunkStorm/eureka-sidecar.git"
+  },
+  "keywords": [
+    "eureka",
+    "service",
+    "discovery"
+  ],
+  "author": "Matt Harris",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/SplunkStorm/eureka-sidecar/issues"
+  },
+  "homepage": "https://github.com/SplunkStorm/eureka-sidecar"
 }
