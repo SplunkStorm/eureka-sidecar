@@ -41,12 +41,12 @@ describe('eureka sidecar', function() {
 
 	describe('end to end tests', function() {
 		var post_stub;
-		before(function(done) {
+		beforeEach(function(done) {
 			post_stub = sinon.stub(sidecar.client, 'post');
 			done();
 		});
 
-		after(function(done) {
+		afterEach(function(done) {
 			post_stub.restore();
 			done();
 		});
@@ -68,13 +68,13 @@ describe('eureka sidecar', function() {
 			var put_stub;
 			var clock;
 
-			before(function(done) {
+			beforeEach(function(done) {
 				put_stub = sinon.stub(sidecar.client, 'put');
 				clock = sinon.useFakeTimers();
 				done();
 			});
 
-			after(function(done) {
+			afterEach(function(done) {
 				put_stub.restore();
 				clock.restore();
 				done();
