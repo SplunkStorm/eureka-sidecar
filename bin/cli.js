@@ -17,7 +17,7 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 		'hostname': process.env.HOSTNAME || os.hostname(),
 		'metadata': {
 			'version': process.env.VERSION || '0.0.1',
-			'build': 
+			'build': buildNumber
 		}
 	});
 });
