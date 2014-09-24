@@ -6,7 +6,7 @@ var buildNumber = -1
 
 fs.readFile('/etc/buildnumber', function(err, data) {
 	if (!err) {
-		buildNumber = data.trim();
+		buildNumber = data.toString().trim();
 	}
 
 	sidecar.initialize({
