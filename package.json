@@ -1,6 +1,6 @@
 {
   "name": "eureka-sidecar",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Library and optional CLI for registering with a Eureka service discovery server",
   "main": "lib/eureka-sidecar.js",
   "bin": {
@@ -10,6 +10,7 @@
     "test": "test"
   },
   "dependencies": {
+    "longjohn": "^0.2.4",
     "node-rest-client": "^1.0.0"
   },
   "devDependencies": {
