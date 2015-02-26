@@ -17,7 +17,7 @@ describe('eureka-sidecar basic unit tests', function() {
         sidecar.parse_health_response.should.be.a.Function;
         sidecar.setup_timer.should.be.a.Function;
         sidecar.client.should.be.an.Object;
-        sidecar.times_retried.should.equal(0);
+        sidecar.attempt.should.equal(1);
         sidecar.registered.should.be.false;
     });
 });
@@ -114,10 +114,10 @@ describe('register', function() {
         check_healthStub.calledTwice.should.be.true;
     });
     it('throws an error if microservice is not ready after n attempts', function() {
+        sidecar.attempt = 1;
         check_healthStub.callsArgWith(0, false);
         (function() {
             sidecar.register();
-            console.log("tick");
             for (var i = 0; i < options.retries; i++) {
                 clock.tick(options.retry_timeout * 1000);
             }
@@ -206,5 +206,104 @@ describe('check_health', function() {
             done();
         });
         responseStub.emit('error', 'E_CONNREFUSED');
+    });
+});
+
+describe('parse_health_response', function() {
+    var successData = '{"status": "ok"}';
+    var failData = '{"status": "fucked"}';
+    var malformedData = 'this is not valid json';
+
+    it('returns true on successData', function() {
+        sidecar.parse_health_response(successData).should.be.true;
+    });
+
+    it('returns false on failData', function() {
+        sidecar.parse_health_response(failData).should.be.false;
+    });
+
+    it('returns false on malformedData', function() {
+        sidecar.parse_health_response(malformedData).should.be.false;
+    });
+});
+
+describe('setup_timer', function() {
+    var options = {timer: 5};
+    it('sets up the interval', function() {
+        sidecar.options = options;
+        sidecar.setup_timer();
+        (function() {
+            sidecar.interval.close();
+        }).should.not.throw();
+    });
+});
+
+describe('heartbeat_interval', function() {
+    var check_healthStub, client_putStub, client_deleteStub;
+    var successResponse = {statusCode: 200};
+    var failResponse = {statusCode: 403};
+
+    beforeEach(function() {
+        check_healthStub = sinon.stub(sidecar, 'check_health');
+        client_putStub = sinon.stub(sidecar.client, 'put');
+        client_deleteStub = sinon.stub(sidecar.client, 'delete');
+    });
+
+    afterEach(function() {
+        check_healthStub.restore();
+        client_putStub.restore();
+        client_deleteStub.restore();
+    });
+
+    it('noops if the microservice is not registered yet', function() {
+        sidecar.registered = false;
+        sidecar.heartbeat_interval();
+        check_healthStub.called.should.be.false;
+        client_deleteStub.called.should.be.false;
+        client_putStub.called.should.be.false;
+    });
+
+    it('renews the eureka record on successful health check', function() {
+        sidecar.registered = true;
+        check_healthStub.callsArgWith(0, true);
+        client_putStub.callsArgWith(1, null, successResponse);
+        (function() {
+            sidecar.heartbeat_interval();
+            check_healthStub.called.should.be.true;
+            client_putStub.called.should.be.true;
+        }).should.not.throw();
+    });
+
+    it('deletes the eureka record on failed health check', function() {
+        sidecar.registered = true;
+        check_healthStub.callsArgWith(0, false);
+        client_deleteStub.callsArgWith(1, null, successResponse);
+        (function() {
+            sidecar.heartbeat_interval();
+            check_healthStub.called.should.be.true;
+            client_deleteStub.called.should.be.true;
+        }).should.throw("Sidecar suiciding due to microservice death");
+    });
+
+    it('throws an error if eureka renewal fails', function() {
+        sidecar.registered = true;
+        check_healthStub.callsArgWith(0, true);
+        client_putStub.callsArgWith(1, 'data error', failResponse);
+        (function() {
+            sidecar.heartbeat_interval();
+            check_healthStub.called.should.be.true;
+            client_putStub.called.should.be.true;
+        }).should.throw('data error');
+    });
+
+    it('throws an error if eureka removal fails', function() {
+        sidecar.registered = true;
+        check_healthStub.callsArgWith(0, false);
+        client_deleteStub.callsArgWith(1, 'data error', failResponse);
+        (function() {
+            sidecar.heartbeat_interval();
+            check_healthStub.called.should.be.true;
+            client_deleteStub.called.should.be.true;
+        }).should.throw('data error');
     });
 });
