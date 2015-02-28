@@ -213,6 +213,8 @@ describe('parse_health_response', function() {
     var successData = '{"status": "ok"}';
     var failData = '{"status": "fucked"}';
     var malformedData = 'this is not valid json';
+    var successObjectData = {status: 'ok'};
+    var weirdData = NaN;
 
     it('returns true on successData', function() {
         sidecar.parse_health_response(successData).should.be.true;
@@ -224,6 +226,14 @@ describe('parse_health_response', function() {
 
     it('returns false on malformedData', function() {
         sidecar.parse_health_response(malformedData).should.be.false;
+    });
+
+    it('returns true on success object data', function() {
+        sidecar.parse_health_response(successObjectData).should.be.true;
+    });
+
+    it('returns false on weird data', function() {
+        sidecar.parse_health_response(weirdData).should.be.false;
     });
 });
 
