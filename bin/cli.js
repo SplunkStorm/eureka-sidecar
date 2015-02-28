@@ -2,6 +2,7 @@
 var os = require('os');
 var fs = require('fs');
 var sidecar = require('../lib/eureka-sidecar');
+require('longjohn');
 var buildNumber = -1
 
 fs.readFile('/etc/buildnumber', function(err, data) {
