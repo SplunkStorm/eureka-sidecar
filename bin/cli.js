@@ -15,6 +15,7 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 		'app': process.env.APP || 'sidecar',
 		'ip-address': process.env.IP_ADDRESS || os.networkInterfaces().eth0[0].address,
 		'app-port': process.env.PORT || '5000',
+		'proto': process.env.PROTO || 'http',
 		'hostname': process.env.HOSTNAME || os.hostname(),
 		'metadata': {
 			'version': process.env.VERSION || '0.0.1',

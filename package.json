@@ -1,6 +1,6 @@
 {
   "name": "eureka-sidecar",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Library and optional CLI for registering with a Eureka service discovery server",
   "main": "lib/eureka-sidecar.js",
   "bin": {
@@ -30,7 +30,9 @@
     "service",
     "discovery"
   ],
-  "author": "Matt Harris",
+  "author": {
+    "name": "Matt Harris"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/SplunkStorm/eureka-sidecar/issues"
