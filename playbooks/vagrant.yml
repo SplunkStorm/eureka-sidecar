@@ -1,0 +1,12 @@
+---
+# Ansible playbook for building Starfish microservice running in Vagrant instance
+# the Vagrantfile is configured to run starfish on 192.168.100.50
+- name: Playbook for building a Vagrant Box 
+  hosts: all
+  user: vagrant 
+  sudo: True
+  vars:
+    vagrant_env:  true
+    code_version: "vagrant-build"
+  roles: 
+    - { role: vagrant }
