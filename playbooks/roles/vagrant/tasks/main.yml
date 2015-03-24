@@ -1,0 +1,33 @@
+---
+- name: Update apt sources
+  apt: update_cache=true
+
+- name: Update all packages to the latest version
+  apt: upgrade=dist
+
+- name: Install necessary packages
+  apt:
+    name: "{{ item.package }}{{ '=%s' % item.version if item.version else '' }}"
+    state: present
+  with_items: required_packages
+
+- name: npm link eureka-sidecar package
+  command: npm link {{ hostpath_codebase }}
+
+- name: Drop supervisord config for health-server
+  template: src="health-server.conf.j2" dest={{ supervisord_home }}/conf.d/health-server.conf
+
+- name: Enable and restart supervisord
+  service: name=supervisor enabled=yes state=restarted
+
+- name: Setup bash local file
+  template:
+    src: bash_local.j2
+    dest: "{{ hostpath_home }}/.bash_local"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Setup bash environment
+  shell: >
+    grep .bash_local {{ hostpath_home }}/.bashrc || echo 'source {{ hostpath_home
+    }}/.bash_local' >> {{ hostpath_home }}/.bashrc

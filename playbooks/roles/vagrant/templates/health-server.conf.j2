@@ -1,0 +1,10 @@
+####################################################
+# {{ ansible_managed }}
+# DO NOT MODIFY DIRECTLY. UPDATE THE ANSIBLE TEMPLATE
+####################################################
+
+[program:health-server]
+command=/usr/bin/nodejs {{ hostpath_codebase }}/bin/health-server.js
+stdout_events_enabled=true
+stderr_events_enabled=true
+priority = 20
