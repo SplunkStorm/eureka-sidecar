@@ -1,9 +1,11 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodejs
 
 var os = require('os');
 var fs = require('fs');
 var sidecar = require('../lib/eureka-sidecar');
+var logger = require('../lib/logger');
 require('longjohn');
+
 var buildNumber = -1;
 
 fs.readFile('/etc/buildnumber', function(err, data) {
@@ -12,7 +14,7 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 	}
 
 	sidecar.initialize({
-		'eureka_url': process.env.EUREKA_URL || 'http://eureka.services.splunkcloud.net/eureka',
+		'cloud_stack': process.env.CLOUD_STACK,
 		'app': process.env.APP || 'sidecar',
 		'ip-address': process.env.IP_ADDRESS || os.networkInterfaces().eth0[0].address,
 		'app-port': process.env.PORT || '5000',

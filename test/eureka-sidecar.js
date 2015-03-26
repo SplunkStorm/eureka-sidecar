@@ -102,14 +102,14 @@ describe('register', function() {
 
     it('on initial success immediately calls make_register_rest_call', function() {
         check_healthStub.callsArgWith(0, true);
-        sidecar.register();
+        sidecar.eureka_register();
         check_healthStub.called.should.be.true;
         make_register_rest_callStub.called.should.be.true;
     });
     it('on initial failure, waits retry_timeout seconds and tries again', function() {
         check_healthStub.onCall(0).callsArgWith(0, false);
         check_healthStub.onCall(1).callsArgWith(0, true);
-        sidecar.register();
+        sidecar.eureka_register();
         clock.tick(options.retry_timeout * 1000);
         check_healthStub.calledTwice.should.be.true;
     });
@@ -117,7 +117,7 @@ describe('register', function() {
         sidecar.attempt = 1;
         check_healthStub.callsArgWith(0, false);
         (function() {
-            sidecar.register();
+            sidecar.eureka_register();
             for (var i = 0; i < options.retries; i++) {
                 clock.tick(options.retry_timeout * 1000);
             }

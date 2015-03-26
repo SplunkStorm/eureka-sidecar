@@ -13,3 +13,7 @@ required_packages:
  - { "package": "npm", "version": "1.3.10~dfsg-1" }
  - { "package": "supervisor", "version": "3.0b2-1" }
  - { "package": "python-pip", "version": "1.5.4-1" }
+
+# Packages
+npm_global_packages:
+ - { "package": "instanbul", "version": "~0.3.11" }
