@@ -16,4 +16,4 @@ required_packages:
 
 # Packages
 npm_global_packages:
- - { "package": "instanbul", "version": "~0.3.11" }
+ - { "package": "istanbul", "version": "~0.3.11" }
