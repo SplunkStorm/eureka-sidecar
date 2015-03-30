@@ -1,3 +1,4 @@
 Host github.com
      IdentityFile ~/.ssh/rainmakr_deploy.pem
+     StrictHostKeyChecking no
      IdentitiesOnly yes

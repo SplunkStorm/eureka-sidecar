@@ -21,14 +21,12 @@
 - name: Symlink node to nodejs
   file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
 
-- name: npm link eureka-sidecar package
-  command: npm link -g
-  args:
-    chdir: "{{ hostpath_codebase }}"
-
 - name: Install npm packages
   npm: name="{{ item.package }}" version="{{ item.version }}" global=yes
   with_items: npm_global_packages
+
+- name: npm link eureka-sidecar package
+  command: npm link {{ hostpath_codebase }}
 
 - name: Drop supervisord config for health-server
   template: src="health-server.conf.j2" dest={{ supervisord_home }}/conf.d/health-server.conf
