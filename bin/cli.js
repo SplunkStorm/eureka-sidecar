@@ -3,7 +3,6 @@
 var os = require('os');
 var fs = require('fs');
 var sidecar = require('../lib/eureka-sidecar');
-var logger = require('../lib/logger');
 require('longjohn');
 
 var buildNumber = -1;

@@ -24,7 +24,6 @@ describe('eureka-sidecar basic unit tests', function() {
 
 describe('validate_options', function() {
     var options = {
-        eureka_url: 'http://eureka',
         app: 'testing',
         'ip-address': '127.0.0.1',
         'app-port': '8000',
@@ -45,7 +44,6 @@ describe('validate_options', function() {
         }).should.not.throw();
         validatedOptions.should.be.an.Object;
         validatedOptions.should.have.properties([
-            'eureka_url',
             'app',
             'ip-address',
             'app-port',
@@ -56,16 +54,13 @@ describe('validate_options', function() {
 });
 
 describe('initialize', function() {
-    var registerStub, setup_timerStub, validate_optionsStub;
+    var validate_optionsStub, retrieveEurekaUrlStub;
     beforeEach(function() {
-        registerStub = sinon.stub(sidecar, 'register');
-        setup_timerStub = sinon.stub(sidecar, 'setup_timer');
         validate_optionsStub = sinon.stub(sidecar, 'validate_options');
+        retrieveEurekaUrlStub = sinon.stub(sidecar, 'retrieve_eureka_url');
     });
 
     afterEach(function() {
-        registerStub.restore();
-        setup_timerStub.restore();
         validate_optionsStub.restore();
     });
 
@@ -75,8 +70,7 @@ describe('initialize', function() {
         sidecar.initialize(options);
         sidecar.options.should.eql(options);
         validate_optionsStub.called.should.be.true;
-        setup_timerStub.called.should.be.true;
-        validate_optionsStub.called.should.be.true;
+        retrieveEurekaUrlStub.called.should.be.true;
     });
 });
 
@@ -102,14 +96,14 @@ describe('register', function() {
 
     it('on initial success immediately calls make_register_rest_call', function() {
         check_healthStub.callsArgWith(0, true);
-        sidecar.eureka_register();
+        sidecar.register();
         check_healthStub.called.should.be.true;
         make_register_rest_callStub.called.should.be.true;
     });
     it('on initial failure, waits retry_timeout seconds and tries again', function() {
         check_healthStub.onCall(0).callsArgWith(0, false);
         check_healthStub.onCall(1).callsArgWith(0, true);
-        sidecar.eureka_register();
+        sidecar.register();
         clock.tick(options.retry_timeout * 1000);
         check_healthStub.calledTwice.should.be.true;
     });
@@ -117,7 +111,7 @@ describe('register', function() {
         sidecar.attempt = 1;
         check_healthStub.callsArgWith(0, false);
         (function() {
-            sidecar.eureka_register();
+            sidecar.register();
             for (var i = 0; i < options.retries; i++) {
                 clock.tick(options.retry_timeout * 1000);
             }
