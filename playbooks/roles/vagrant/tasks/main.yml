@@ -11,11 +11,20 @@
     state: present
   with_items: required_packages
 
+- name: Copy root ssh config
+  copy: src=root_ssh_config dest=/root/.ssh/config mode=0600
+
+- name: Copy deploy key for rainmakr_deploy_pem
+  copy: content="{{ rainmakr_deploy_pem }}"
+    dest=/root/.ssh/rainmakr_deploy.pem mode=0600
+
 - name: Symlink node to nodejs
   file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
 
 - name: npm link eureka-sidecar package
-  command: npm link {{ hostpath_codebase }}
+  command: npm link -g
+  args:
+    chdir: "{{ hostpath_codebase }}"
 
 - name: Install npm packages
   npm: name="{{ item.package }}" version="{{ item.version }}" global=yes

@@ -13,7 +13,8 @@
     "aws-sdk": "~2.1.18",
     "longjohn": "~0.2.4",
     "node-rest-client": "~1.0.0",
-    "winston": "~0.8.3"
+    "winston": "~0.8.3",
+    "splunk_cloud_common_node": "git+ssh://git@github.com:SplunkStorm/splunk_cloud_common_node.git"
   },
   "devDependencies": {
     "express": "~4.0.0",
