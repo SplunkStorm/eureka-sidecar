@@ -8,5 +8,7 @@
   vars:
     vagrant_env:  true
     code_version: "vagrant-build"
+  vars_files:
+    - roles/vagrant/vars/deploy.yml
   roles: 
     - { role: vagrant }

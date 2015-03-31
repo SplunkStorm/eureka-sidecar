@@ -11,14 +11,25 @@
     state: present
   with_items: required_packages
 
+- name: Copy root ssh config
+  copy: src=root_ssh_config dest=/root/.ssh/config mode=0600
+
+- name: Copy deploy key for rainmakr_deploy_pem
+  copy: content="{{ rainmakr_deploy_pem }}"
+    dest=/root/.ssh/rainmakr_deploy.pem mode=0600
+
+- name: Symlink node to nodejs
+  file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
+
+- name: Install npm packages
+  npm: name="{{ item.package }}" version="{{ item.version }}" global=yes
+  with_items: npm_global_packages
+
 - name: npm link eureka-sidecar package
   command: npm link {{ hostpath_codebase }}
 
 - name: Drop supervisord config for health-server
   template: src="health-server.conf.j2" dest={{ supervisord_home }}/conf.d/health-server.conf
-
-- name: Enable and restart supervisord
-  service: name=supervisor enabled=yes state=restarted
 
 - name: Setup bash local file
   template:
@@ -31,3 +42,6 @@
   shell: >
     grep .bash_local {{ hostpath_home }}/.bashrc || echo 'source {{ hostpath_home
     }}/.bash_local' >> {{ hostpath_home }}/.bashrc
+
+- name: Enable and restart supervisord
+  service: name=supervisor enabled=yes state=restarted

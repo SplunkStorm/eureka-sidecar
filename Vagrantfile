@@ -34,9 +34,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook       = "playbooks/vagrant.yml"
       ansible.extra_vars     = "playbooks/roles/vagrant/vars/main.yml"
       ansible.verbose        = "vv"
-      #Enable this when using ansible vault
-      #ansible.ask_vault_pass = true
+      ansible.vault_password_file = "~/.vault.pass.txt"
     end
+
   end
 
 end
