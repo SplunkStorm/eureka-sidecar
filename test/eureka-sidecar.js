@@ -25,7 +25,6 @@ describe('eureka-sidecar basic unit tests', function () {
 
 describe('validate_options', function () {
     var options = {
-        cloud_stack: 'fake',
         app: 'testing',
         'ip-address': '127.0.0.1',
         'app-port': '8000',
@@ -68,10 +67,20 @@ describe('initialize', function () {
         get_eureka_urlStub.restore();
     });
 
-    it('initializes successfully', function () {
+    it('initializes successfully without dynamic config', function () {
+        var options = { cloud_stack: null };
+        validate_optionsStub.returns(options);
+        sidecar.initialize(options);
+        sidecar.options.should.eql(options);
+        sidecar.options.eureka_url.should.be.equal("http://eureka.services.splunkcloud.net/eureka");
+        validate_optionsStub.called.should.be.true;
+        get_eureka_urlStub.called.should.be.false;
+    });
+
+    it('dynamic config initializes successfully', function () {
         eureka_url = "http://localhost:8081";
 
-        var options = {'cloud_stack': 'fake'};
+        var options = { cloud_stack: 'fake' };
         validate_optionsStub.returns(options);
         get_eureka_urlStub.callsArgWith(0, null, eureka_url);
         sidecar.initialize(options);
@@ -81,8 +90,8 @@ describe('initialize', function () {
         get_eureka_urlStub.called.should.be.true;
     });
 
-    it('throws error upon eureka discovery failure', function () {
-        var options = {'cloud_stack': 'fake'};
+    it('dynamic config throws error upon eureka discovery failure', function () {
+        var options = { cloud_stack: 'fake' };
         validate_optionsStub.returns(options);
         get_eureka_urlStub.callsArgWith(0, "failed", null);
         (function () {
@@ -99,7 +108,7 @@ describe('initialize', function () {
 describe('register', function () {
     var check_healthStub, make_register_rest_callStub, clock;
     var options = {
-        'retries': 5,
+        retries: 5,
         retry_timeout: .001
     };
 
@@ -108,6 +117,7 @@ describe('register', function () {
         make_register_rest_callStub = sinon.stub(sidecar, 'make_register_rest_call');
         sidecar.options = options;
         clock = sinon.useFakeTimers();
+        sidecar.attempt = 1;
     });
 
     afterEach(function () {
