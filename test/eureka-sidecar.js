@@ -89,7 +89,7 @@ describe('initialize', function () {
             sidecar.initialize(options);
         }).should.throw("failed");
         sidecar.options.should.eql(options);
-        sidecar.options.eureka_url.should.be.undefined;
+        (sidecar.options.eureka_url === undefined).should.be.true;
         validate_optionsStub.called.should.be.true;
         get_eureka_urlStub.called.should.be.true;
     });
