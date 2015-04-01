@@ -8,8 +8,20 @@ var express = require('express');
 var app = module.exports = express();
 
 // Routes
+app.get('/health_error', function(req, res) {
+    res.status(500).send(
+        {
+            'status': 'failed',
+            'service_info': {
+                'name': 'dummy',
+                'version': 2
+            }
+        }
+    );
+});
+
 app.get('/health', function(req, res) {
-	res.json({
+    res.json({
         'status': 'ok',
         'service_info': {
           'name': 'dummy',
