@@ -14,6 +14,7 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 
 	sidecar.initialize({
 		'cloud_stack': process.env.CLOUD_STACK,
+		'cloud_cluster': process.env.CLOUD_CLUSTER,
 		'app': process.env.APP || 'sidecar',
 		'ip-address': process.env.IP_ADDRESS || os.networkInterfaces().eth0[0].address,
 		'app-port': process.env.PORT || '5000',
