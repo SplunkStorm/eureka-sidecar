@@ -1,10 +1,10 @@
 /**
  * Created by mharris on 2/25/15.
  */
-
+require('longjohn');
 var sidecar = require('../lib/eureka-sidecar.js');
 var SplunkCloud = require('splunk_cloud_common_node');
-var should = require('should');
+require('should');
 var sinon = require('sinon');
 var EventEmitter = require('events').EventEmitter;
 
@@ -55,16 +55,20 @@ describe('validate_options', function () {
 });
 
 describe('initialize', function () {
-    var validate_optionsStub, get_eureka_urlStub;
+    var validate_optionsStub, get_eureka_urlStub, setup_timerStub, registerStub;
     beforeEach(function () {
         validate_optionsStub = sinon.stub(sidecar, 'validate_options');
         get_eureka_urlStub = sinon.stub(SplunkCloud.DynamicConfig.prototype,
             'get_eureka_url');
+        setup_timerStub = sinon.stub(sidecar, 'setup_timer');
+        registerStub = sinon.stub(sidecar, 'register');
     });
 
     afterEach(function () {
         validate_optionsStub.restore();
         get_eureka_urlStub.restore();
+        setup_timerStub.restore();
+        registerStub.restore();
     });
 
     it('initializes successfully without dynamic config', function () {
