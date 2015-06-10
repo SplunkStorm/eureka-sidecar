@@ -4,6 +4,7 @@ var os = require('os');
 var fs = require('fs');
 var sidecar = require('../lib/eureka-sidecar');
 var SplunkCloud = require('splunk_cloud_common_node');
+var SplunkCloudDynamicConfig = new SplunkCloud.DynamicConfig();
 var winston = SplunkCloud.Logger;
 if (process.env.DEBUG) {
 	require('longjohn');
@@ -16,7 +17,7 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 		buildNumber = data.toString().trim();
 	}
 
-	SplunkCloud.get_user_data(function(err, userdata) {
+	SplunkCloudDynamicConfig.get_user_data(function(err, userdata) {
 		process.env.CLOUD_STACK = process.env.CLOUD_STACK || userdata.CLOUD_STACK;
 		sidecar.initialize({
 			'cloud_stack': process.env.CLOUD_STACK,
