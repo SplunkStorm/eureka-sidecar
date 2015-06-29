@@ -186,11 +186,12 @@ describe('make_register_rest_call', function () {
         sidecar.registered.should.be.true;
     });
 
-    it('throws an error on unsuccessful post', function () {
+    it('does not throw an error on unsuccessful post', function () {
         client_postStub.callsArgWith(2, 'error', failResponse);
+        client_postStub.returns(client_postStub_return);
         (function () {
             sidecar.make_register_rest_call();
-        }).should.throw('error');
+        }).should.not.throw();
         client_postStub.called.should.be.true;
     });
 
