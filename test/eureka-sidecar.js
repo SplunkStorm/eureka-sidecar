@@ -7,6 +7,7 @@ var SplunkCloud = require('splunk_cloud_common_node');
 require('should');
 var sinon = require('sinon');
 var EventEmitter = require('events').EventEmitter;
+var winston = require('splunk_cloud_common_node').Logger;
 
 describe('eureka-sidecar basic unit tests', function () {
     it('contains the proper functions', function () {
@@ -159,29 +160,48 @@ describe('make_register_rest_call', function () {
     var client_postStub;
     var successResponse = {statusCode: 200};
     var failResponse = {statusCode: 403};
+    var client_postStub_return;
+    var winston_errorStub;
+    var reqStub = {abort: function() {}};
 
     beforeEach(function () {
         client_postStub = sinon.stub(sidecar.client, 'post');
+        client_postStub_return = {
+            on: sinon.stub()
+        };
+        winston_errorStub = sinon.stub(winston, 'error');
     });
 
     afterEach(function () {
         client_postStub.restore();
+        winston_errorStub.restore();
     });
 
     it('sets registered to true on successful post', function () {
         client_postStub.callsArgWith(2, null, successResponse);
+        client_postStub.returns(client_postStub_return);
         sidecar.registered.should.be.false;
         sidecar.make_register_rest_call();
         client_postStub.called.should.be.true;
         sidecar.registered.should.be.true;
     });
 
-    it('throws an error on unsuccessful post', function () {
+    it('does not throw an error on unsuccessful post', function () {
         client_postStub.callsArgWith(2, 'error', failResponse);
+        client_postStub.returns(client_postStub_return);
         (function () {
             sidecar.make_register_rest_call();
-        }).should.throw('error');
+        }).should.not.throw();
         client_postStub.called.should.be.true;
+    });
+
+    it ('logs an error on timeouts', function() {
+        client_postStub.returns(client_postStub_return);
+        client_postStub_return.on.onCall(0).callsArgWith(1, reqStub);
+        client_postStub_return.on.onCall(1).callsArgWith(1, reqStub);
+        client_postStub_return.on.onCall(2).callsArgWith(1, {message: 'error'});
+        sidecar.make_register_rest_call();
+        winston_errorStub.calledThrice.should.be.true;
     });
 });
 
