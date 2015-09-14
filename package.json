@@ -1,6 +1,6 @@
 {
   "name": "eureka-sidecar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Library and optional CLI for registering with a Eureka service discovery server",
   "main": "lib/eureka-sidecar.js",
   "bin": {
