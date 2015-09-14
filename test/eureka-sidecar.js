@@ -195,13 +195,20 @@ describe('make_register_rest_call', function () {
         client_postStub.called.should.be.true;
     });
 
-    it ('logs an error on timeouts', function() {
+    it ('logs an error and aborts on timeouts', function() {
         client_postStub.returns(client_postStub_return);
         client_postStub_return.on.onCall(0).callsArgWith(1, reqStub);
-        client_postStub_return.on.onCall(1).callsArgWith(1, reqStub);
+        (function() {
+            sidecar.make_register_rest_call();
+        }).should.throw();
+    });
+
+    it ('logs an error and aborts on socket errors', function() {
+        client_postStub.returns(client_postStub_return);
         client_postStub_return.on.onCall(2).callsArgWith(1, {message: 'error'});
-        sidecar.make_register_rest_call();
-        winston_errorStub.calledThrice.should.be.true;
+        (function() {
+            sidecar.make_register_rest_call();
+        }).should.throw();
     });
 });
 
