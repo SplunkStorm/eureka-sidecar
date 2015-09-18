@@ -19,18 +19,21 @@ fs.readFile('/etc/buildnumber', function(err, data) {
 
 	SplunkCloudDynamicConfig.get_user_data(function(err, userdata) {
 		process.env.CLOUD_STACK = process.env.CLOUD_STACK || userdata.CLOUD_STACK;
-		sidecar.initialize({
-			'cloud_stack': process.env.CLOUD_STACK,
-			'app': process.env.APP || 'sidecar',
-			'ip-address': process.env.IP_ADDRESS || os.networkInterfaces().eth0[0].address,
-			'app-port': process.env.PORT || '5000',
-			'proto': process.env.PROTO || 'http',
-			'hostname': process.env.HOSTNAME || os.hostname(),
-			'metadata': {
-				'version': process.env.VERSION || '0.0.1',
-				'build': buildNumber
-			}
-		});
+		// Timeout to prevent runaway restarts
+		setTimeout(function() {
+			sidecar.initialize({
+				'cloud_stack': process.env.CLOUD_STACK,
+				'app': process.env.APP || 'sidecar',
+				'ip-address': process.env.IP_ADDRESS || os.networkInterfaces().eth0[0].address,
+				'app-port': process.env.PORT || '5000',
+				'proto': process.env.PROTO || 'http',
+				'hostname': process.env.HOSTNAME || os.hostname(),
+				'metadata': {
+					'version': process.env.VERSION || '0.0.1',
+					'build': buildNumber
+				}
+			});
+		}, 5000);
 	});
 });
 

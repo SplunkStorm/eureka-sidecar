@@ -159,7 +159,7 @@ describe('register', function () {
 describe('make_register_rest_call', function () {
     var client_postStub;
     var successResponse = {statusCode: 200};
-    var failResponse = {statusCode: 403};
+    var failResponse = {statusCode: 503};
     var client_postStub_return;
     var winston_errorStub;
     var reqStub = {abort: function() {}};
@@ -186,12 +186,12 @@ describe('make_register_rest_call', function () {
         sidecar.registered.should.be.true;
     });
 
-    it('does not throw an error on unsuccessful post', function () {
+    it('throws an error on unsuccessful post', function () {
         client_postStub.callsArgWith(2, 'error', failResponse);
         client_postStub.returns(client_postStub_return);
         (function () {
             sidecar.make_register_rest_call();
-        }).should.not.throw();
+        }).should.throw();
         client_postStub.called.should.be.true;
     });
 
